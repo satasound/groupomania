@@ -18,30 +18,6 @@ exports.createComment = (req, res, next) => {
 };
 
 /*************************************************
- ************  DELETE POST        **********
- *************************************************/
-exports.deleteComment = (req, res, next) => {
-  /////////////////////////////////////////////
-  const token = req.headers.authorization.split(' ')[1];
-  const decodedToken = jwt.verify(token, process.env.TOKEN);
-  const userId = decodedToken.userId;
-  const role = decodedToken.role;
-
-  Comment.destroy({ where: { id: req.params.id } })
-
-    .then((comment) => {
-      if (userId === comment.user_id || role === 0 || role === 1) {
-        res.status(200).json({ message: 'Commentaire supprimé !' });
-      } else {
-        res.status(401).json({
-          message: 'Requête non autorisée !',
-        });
-      }
-    })
-    .catch((error) => res.status(400).json({ error }));
-};
-
-/*************************************************
  ************  GET POST COMMENTS       **********
  *************************************************/
 exports.getPostComments = (req, res, next) => {
@@ -84,25 +60,20 @@ exports.getAllComments = (req, res, next) => {
 };
 
 /*************************************************
- ************  MODIFY COMMENT        **********
+ ************  DELETE POST        **********
  *************************************************/
-exports.modifyComment = (req, res, next) => {
+exports.deleteComment = (req, res, next) => {
   /////////////////////////////////////////////
   const token = req.headers.authorization.split(' ')[1];
   const decodedToken = jwt.verify(token, process.env.TOKEN);
+  const userId = decodedToken.userId;
   const role = decodedToken.role;
 
-  Comment.findOne({ where: { id: req.params.id } })
-    .then(() => {
-      if (role === 1) {
-        const modifyComment = {
-          moderate: req.body.moderate,
-        };
+  Comment.destroy({ where: { id: req.params.id } })
 
-        Comment.update(modifyComment, { where: { id: req.params.id } })
-
-          .then(() => res.status(200).json({ message: 'Commentaire modifié !' }))
-          .catch((error) => res.status(400).json({ error }));
+    .then((comment) => {
+      if (userId === comment.user_id || role === 1) {
+        res.status(200).json({ message: 'Commentaire supprimé !' });
       } else {
         res.status(401).json({
           message: 'Requête non autorisée !',

@@ -31,136 +31,6 @@ exports.createPost = (req, res, next) => {
 };
 
 /*************************************************
- ************  MODIFY POST        **********
- *************************************************/
-exports.modifyPost = (req, res, next) => {
-  /////////////////////////////////////////
-  const token = req.headers.authorization.split(' ')[1];
-  const decodedToken = jwt.verify(token, process.env.TOKEN);
-  const userId = decodedToken.userId;
-  const role = decodedToken.role;
-
-  if (req.file) {
-    Post.findOne({ where: { id: req.params.id } })
-      .then((post) => {
-        if (userId === post.user_id || role === 1) {
-          if (post.image) {
-            const filename = post.image.split('/images/posts/')[1];
-            fs.unlink(`images/posts/${filename}`, () => {
-              const modifyPost = {
-                title: req.body.title,
-                content: req.body.content,
-                updated_date: Date.now(),
-                moderate: false,
-                image: `${req.protocol}://${req.get('host')}/images/posts/${req.file.filename}`,
-              };
-
-              Post.update(modifyPost, { where: { id: req.params.id } })
-
-                .then(() => res.status(200).json({ message: 'Post modifié !' }))
-                .catch((error) => res.status(400).json({ error }));
-            });
-          } else {
-            const modifyPost = {
-              title: req.body.title,
-              content: req.body.content,
-              updated_date: Date.now(),
-              moderate: false,
-              image: `${req.protocol}://${req.get('host')}/images/posts/${req.file.filename}`,
-            };
-
-            Post.update(modifyPost, { where: { id: req.params.id } })
-
-              .then(() => res.status(200).json({ message: 'Post modifié !' }))
-              .catch((error) => res.status(400).json({ error }));
-          }
-        } else {
-          res.status(401).json({
-            message: 'Requête non autorisée !',
-          });
-        }
-      })
-      .catch((error) => res.status(500).json({ error }));
-  } else {
-    Post.findOne({ where: { id: req.params.id } })
-      .then((post) => {
-        if (userId === post.user_id || role === 1) {
-          if (post.image && req.body.image === '') {
-            const filename = post.image.split('/images/posts/')[1];
-            fs.unlink(`images/posts/${filename}`, () => {
-              const modifyPost = {
-                title: req.body.title,
-                content: req.body.content,
-                updated_date: Date.now(),
-                moderate: false,
-                image: '',
-              };
-
-              Post.update(modifyPost, { where: { id: req.params.id } })
-
-                .then(() => res.status(200).json({ message: 'Post modifié !' }))
-                .catch((error) => res.status(400).json({ error }));
-            });
-          } else {
-            const modifyPost = {
-              title: req.body.title,
-              content: req.body.content,
-              updated_date: Date.now(),
-              moderate: false,
-            };
-
-            Post.update(modifyPost, { where: { id: req.params.id } })
-
-              .then(() => res.status(200).json({ message: 'Post modifié !' }))
-              .catch((error) => res.status(400).json({ error }));
-          }
-        } else {
-          res.status(401).json({
-            message: 'Requête non autorisée !',
-          });
-        }
-      })
-      .catch((error) => res.status(500).json({ error }));
-  }
-};
-
-/*************************************************
- ************  DELETE POST        **********
- *************************************************/
-exports.deletePost = (req, res, next) => {
-  /////////////////////////////////////////
-  const token = req.headers.authorization.split(' ')[1];
-  const decodedToken = jwt.verify(token, process.env.TOKEN);
-  const userId = decodedToken.userId;
-  const role = decodedToken.role;
-
-  Post.findOne({ where: { id: req.params.id } })
-    .then((post) => {
-      if (userId === post.user_id || role === 0 || role === 1) {
-        if (post.image != null) {
-          const filename = post.image.split('/images/posts/')[1];
-          fs.unlink(`images/posts/${filename}`, () => {
-            Post.destroy({ where: { id: req.params.id } })
-
-              .then(() => res.status(200).json({ message: 'Post supprimé !' }))
-              .catch((error) => res.status(400).json({ error }));
-          });
-        } else {
-          Post.destroy({ where: { id: req.params.id } })
-
-            .then(() => res.status(200).json({ message: 'Post supprimé !' }))
-            .catch((error) => res.status(400).json({ error }));
-        }
-      } else {
-        res.status(401).json({
-          message: 'Requête non autorisée !',
-        });
-      }
-    })
-    .catch((error) => res.status(400).json({ error }));
-};
-
-/*************************************************
  ************  GET ALL POSTS        **********
  *************************************************/
 exports.getAllPosts = (req, res, next) => {
@@ -216,5 +86,41 @@ exports.getPostsUser = (req, res, next) => {
   })
 
     .then((posts) => res.status(200).json(posts))
+    .catch((error) => res.status(400).json({ error }));
+};
+
+/*************************************************
+ ************  DELETE POST        **********
+ *************************************************/
+exports.deletePost = (req, res, next) => {
+  /////////////////////////////////////////
+  const token = req.headers.authorization.split(' ')[1];
+  const decodedToken = jwt.verify(token, process.env.TOKEN);
+  const userId = decodedToken.userId;
+  const role = decodedToken.role;
+
+  Post.findOne({ where: { id: req.params.id } })
+    .then((post) => {
+      if (userId === post.user_id || role === 1) {
+        if (post.image != null) {
+          const filename = post.image.split('/images/posts/')[1];
+          fs.unlink(`images/posts/${filename}`, () => {
+            Post.destroy({ where: { id: req.params.id } })
+
+              .then(() => res.status(200).json({ message: 'Post supprimé !' }))
+              .catch((error) => res.status(400).json({ error }));
+          });
+        } else {
+          Post.destroy({ where: { id: req.params.id } })
+
+            .then(() => res.status(200).json({ message: 'Post supprimé !' }))
+            .catch((error) => res.status(400).json({ error }));
+        }
+      } else {
+        res.status(401).json({
+          message: 'Requête non autorisée !',
+        });
+      }
+    })
     .catch((error) => res.status(400).json({ error }));
 };

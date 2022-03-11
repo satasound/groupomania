@@ -72,44 +72,18 @@ exports.login = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
+
 /*************************************************
- ****************   DELETE USER      **************
+ ************  GET ALL USERS        **********
  *************************************************/
-exports.delete = (req, res, next) => {
-  //////////////////////////////////////
-  const token = req.headers.authorization.split(' ')[1];
-  const decodedToken = jwt.verify(token, process.env.TOKEN);
-  const userId = decodedToken.userId;
-  const role = decodedToken.role;
-
+exports.getAllUsers = (req, res, next) => {
+  //////////////////////////////////////////
   user
-    .findOne({ where: { id: req.params.id } })
-    .then((User) => {
-      if (userId === User.id || role === 0) {
-        if (User.image != null) {
-          const filename = User.image.split('/images/profiles/')[1];
-          fs.unlink(`images/profiles/${filename}`, () => {
-            user
-              .destroy({ where: { id: req.params.id } })
-
-              .then(() => res.status(200).json({ message: 'Utilisateur supprimé !' }))
-              .catch((error) => res.status(400).json({ error }));
-          });
-        } else {
-          user
-            .destroy({ where: { id: req.params.id } })
-
-            .then(() => res.status(200).json({ message: 'Utilisateur supprimé !' }))
-            .catch((error) => res.status(400).json({ error }));
-        }
-      } else {
-        res.status(401).json({
-          message: 'Requête non autorisée !',
-        });
-      }
-    })
-    .catch((error) => res.status(400).json({ error }));
+    .findAll()
+    .then((users) => res.status(200).json(users))
+    .catch((error) => res.status(400).json(error));
 };
+
 /*************************************************
  ***************    GET USER        ***************
  *************************************************/
@@ -135,7 +109,7 @@ exports.modifyUser = (req, res, next) => {
     user
       .findOne({ where: { id: req.params.id } })
       .then((User) => {
-        if (userId === User.id || role === 0) {
+        if (userId === User.id || role === 1) {
           if (User.image) {
             const filename = User.image.split('/images/profiles/')[1];
             fs.unlink(`images/profiles/${filename}`, () => {
@@ -177,7 +151,7 @@ exports.modifyUser = (req, res, next) => {
     user
       .findOne({ where: { id: req.params.id } })
       .then((User) => {
-        if (userId === User.id || role === 0) {
+        if (userId === User.id || role === 1) {
           if (User.image && req.body.image === '') {
             const filename = User.image.split('/images/profiles/')[1];
             fs.unlink(`images/profiles/${filename}`, () => {
@@ -226,7 +200,7 @@ exports.AdminModifyUser = (req, res, next) => {
   const decodedToken = jwt.verify(token, process.env.TOKEN);
   const role = decodedToken.role;
 
-  if (role === 0) {
+  if (role === 1) {
     const modifyUser = {
       nom: req.body.nom,
       prenom: req.body.prenom,
@@ -245,108 +219,41 @@ exports.AdminModifyUser = (req, res, next) => {
   }
 };
 
-exports.AdminModifyPassword = (req, res, next) => {
+/*************************************************
+ ****************   DELETE USER      **************
+ *************************************************/
+exports.delete = (req, res, next) => {
+  //////////////////////////////////////
   const token = req.headers.authorization.split(' ')[1];
   const decodedToken = jwt.verify(token, process.env.TOKEN);
+  const userId = decodedToken.userId;
   const role = decodedToken.role;
 
   user
     .findOne({ where: { id: req.params.id } })
-    .then(() => {
-      if (role === 0) {
-        if (!schema.validate(req.body.password)) {
-          return res
-            .status(401)
-            .json(
-              'Le nouveau mot de passe doit avoir une longueur de 3 à 50 caractères avec au moins un chiffre, une minuscule, une majuscule !!!'
-            );
-        }
-
-        bcrypt
-          .hash(req.body.password, 10)
-          .then((hash) => {
-            const newPassword = {
-              password: hash,
-            };
-
-            user
-              .update(newPassword, { where: { id: req.params.id } })
-              .then(() => {
-                res.status(201).json({ message: 'Mot de passe modifié !' });
-              })
-              .catch((error) => res.status(400).json({ error }));
-          })
-          .catch((error) => res.status(500).json({ error }));
-      } else {
-        res.status(401).json({
-          message: 'Requête non autorisée !',
-        });
-      }
-    })
-    .catch((error) => res.status(500).json({ error }));
-};
-
-/*************************************************
- ************  GET ALL USERS        **********
- *************************************************/
-exports.getAllUsers = (req, res, next) => {
-  //////////////////////////////////////////
-  user
-    .findAll()
-    .then((users) => res.status(200).json(users))
-    .catch((error) => res.status(400).json(error));
-};
-
-/*************************************************
- ************  MODIFY PASSWORD        **********
- *************************************************/
-exports.modifyPassword = (req, res, next) => {
-  /////////////////////////////////////////////
-  const token = req.headers.authorization.split(' ')[1];
-  const decodedToken = jwt.verify(token, process.env.TOKEN);
-  const userId = decodedToken.userId;
-
-  user
-    .findOne({ where: { id: req.params.id } })
     .then((User) => {
-      if (userId === User.id) {
-        bcrypt
-          .compare(req.body.oldPassword, User.password)
-          .then((valid) => {
-            if (!valid) {
-              return res.status(401).json('Mot de passe actuel incorrect');
-            }
+      if (userId === User.id || role === 1) {
+        if (User.image != null) {
+          const filename = User.image.split('/images/profiles/')[1];
+          fs.unlink(`images/profiles/${filename}`, () => {
+            user
+              .destroy({ where: { id: req.params.id } })
 
-            if (!schema.validate(req.body.password)) {
-              return res
-                .status(401)
-                .json(
-                  'Le nouveau mot de passe doit avoir une longueur de 3 à 50 caractères avec au moins un chiffre, une minuscule, une majuscule !!!'
-                );
-            }
+              .then(() => res.status(200).json({ message: 'Utilisateur supprimé !' }))
+              .catch((error) => res.status(400).json({ error }));
+          });
+        } else {
+          user
+            .destroy({ where: { id: req.params.id } })
 
-            bcrypt
-              .hash(req.body.password, 10)
-              .then((hash) => {
-                const newPassword = {
-                  password: hash,
-                };
-
-                user
-                  .update(newPassword, { where: { id: req.params.id } })
-                  .then(() => {
-                    res.status(201).json({ message: 'Mot de passe modifié !' });
-                  })
-                  .catch((error) => res.status(400).json({ error }));
-              })
-              .catch((error) => res.status(500).json({ error }));
-          })
-          .catch((error) => res.status(500).json({ error }));
+            .then(() => res.status(200).json({ message: 'Utilisateur supprimé !' }))
+            .catch((error) => res.status(400).json({ error }));
+        }
       } else {
         res.status(401).json({
           message: 'Requête non autorisée !',
         });
       }
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((error) => res.status(400).json({ error }));
 };
