@@ -25,6 +25,7 @@ const user = sequelize.define(
     },
     image: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     role: {
       type: DataTypes.INTEGER,

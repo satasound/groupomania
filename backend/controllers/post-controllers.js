@@ -14,7 +14,7 @@ exports.createPost = (req, res, next) => {
     Post.create({
       title: req.body.title,
       content: req.body.content,
-      image: `${req.protocol}://${req.get('host')}/images/posts/${req.file.filename}`,
+      image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
       user_id: req.body.user_id,
     })
       .then(() => res.status(201).json({ message: 'Post créé !' }))
@@ -103,8 +103,8 @@ exports.deletePost = (req, res, next) => {
     .then((post) => {
       if (userId === post.user_id || role === 1) {
         if (post.image != null) {
-          const filename = post.image.split('/images/posts/')[1];
-          fs.unlink(`images/posts/${filename}`, () => {
+          const filename = post.image.split('/images/')[1];
+          fs.unlink(`images/${filename}`, () => {
             Post.destroy({ where: { id: req.params.id } })
 
               .then(() => res.status(200).json({ message: 'Post supprimé !' }))

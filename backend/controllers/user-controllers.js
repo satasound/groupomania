@@ -14,30 +14,43 @@ schema.is().min(3).is().max(50).has().uppercase().has().lowercase().has().digits
  *************************************************/
 exports.signup = (req, res, next) => {
   //////////////////////////////////////
+
   if (!emailValidator.validate(req.body.email)) {
     return res.status(401).json({ message: 'Veuillez entrer une adresse email valide' });
   }
 
   if (!schema.validate(req.body.password)) {
     return res.status(401).json({
-      message: 'Le mot de passe doit avoir une longueur de 3 à 50 caractères avec au moins un chiffre, une minuscule, une majuscule !!!',
+      message: 'Le mot de passe doit avoir une longueur de 3 à 50 caractères avec au moins un chiffre, une minuscule, une majuscule !',
     });
   }
 
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
-      user
-        .create({
-          nom: req.body.nom,
-          prenom: req.body.prenom,
-          email: req.body.email,
-          password: hash,
-          image: req.body.image,
-          role: req.body.role,
-        })
-        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-        .catch(() => res.status(400).json('Votre adresse email est déjà utilisé'));
+      if (req.file) {
+        user
+          .create({
+            nom: req.body.nom,
+            prenom: req.body.prenom,
+            email: req.body.email,
+            password: hash,
+            image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+            role: req.body.role,
+          })
+          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+          .catch(() => res.status(400).json('requette incorrecte'));
+      } else
+        user
+          .create({
+            nom: req.body.nom,
+            prenom: req.body.prenom,
+            email: req.body.email,
+            password: hash,
+            role: req.body.role,
+          })
+          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+          .catch(() => res.status(400).json('requette incorrecte'));
     })
     .catch((error) => res.status(500).json({ error }));
 };
@@ -63,6 +76,7 @@ exports.login = (req, res, next) => {
 
           res.status(200).json({
             userId: user.id,
+            user: user,
             image: user.image,
             role: user.role,
             token: jwt.sign({ userId: user.id, role: user.role }, process.env.TOKEN, { expiresIn: '24h' }),
@@ -111,13 +125,13 @@ exports.modifyUser = (req, res, next) => {
       .then((User) => {
         if (userId === User.id || role === 1) {
           if (User.image) {
-            const filename = User.image.split('/images/profiles/')[1];
-            fs.unlink(`images/profiles/${filename}`, () => {
+            const filename = User.image.split('/images/')[1];
+            fs.unlink(`images/${filename}`, () => {
               const modifyUser = {
                 nom: req.body.nom,
                 prenom: req.body.prenom,
                 email: req.body.email,
-                image: `${req.protocol}://${req.get('host')}/images/profiles/${req.file.filename}`,
+                image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
               };
 
               user
@@ -131,7 +145,7 @@ exports.modifyUser = (req, res, next) => {
               nom: req.body.nom,
               prenom: req.body.prenom,
               email: req.body.email,
-              image: `${req.protocol}://${req.get('host')}/images/profiles/${req.file.filename}`,
+              image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
             };
 
             user
@@ -153,8 +167,8 @@ exports.modifyUser = (req, res, next) => {
       .then((User) => {
         if (userId === User.id || role === 1) {
           if (User.image && req.body.image === '') {
-            const filename = User.image.split('/images/profiles/')[1];
-            fs.unlink(`images/profiles/${filename}`, () => {
+            const filename = User.image.split('/images/')[1];
+            fs.unlink(`images/${filename}`, () => {
               const modifyUser = {
                 nom: req.body.nom,
                 prenom: req.body.prenom,
@@ -234,8 +248,8 @@ exports.delete = (req, res, next) => {
     .then((User) => {
       if (userId === User.id || role === 1) {
         if (User.image != null) {
-          const filename = User.image.split('/images/profiles/')[1];
-          fs.unlink(`images/profiles/${filename}`, () => {
+          const filename = User.image.split('/images/')[1];
+          fs.unlink(`images/${filename}`, () => {
             user
               .destroy({ where: { id: req.params.id } })
 
