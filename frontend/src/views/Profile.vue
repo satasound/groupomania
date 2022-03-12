@@ -56,7 +56,7 @@
             <label
               v-if="!user.image"
               for="file"
-              class="label-file"
+              class="label-file bouton-create-comment"
               aria-label="Choisir la photo de profile"
               >Choisir une photo de profile</label
             >
@@ -84,14 +84,14 @@
             class="button"
             aria-label="Modifier le compte de cet utilisateur"
           >
-            <i class="fas fa-edit"></i> Enregistrer les modifications
+            <i class="fas fa-edit"></i>
           </button>
           <button
             @click="deleteUser()"
-            class="button espacement"
+            class="button bouton-supp"
             aria-label="Supprimer le compte de cet utilisateur"
           >
-            <i class="far fa-trash-alt"></i> Supprimer le compte
+            <i class="far fa-trash-alt"></i>
           </button>
         </div>
       </form>
@@ -312,12 +312,13 @@ export default {
 
 <style scoped>
 h1 {
-  margin: 30px 0 30px 0;
-  width: 100%;
-  font-size: 2rem;
-  background: #ffd7d7;
-  border: 2px solid #fd2d01;
-  border-radius: 20px;
+  width: 60%;
+  margin: 20px auto;
+  font-size: 1.7vw;
+  background: #e8e8e8;
+  border: 2px solid #b4b3b2;
+  border-radius: 5px;
+  padding: 8px;
 }
 
 ul {
@@ -357,13 +358,13 @@ input {
 
 .button,
 .label-file {
-  margin: 20px 0 0 0;
+  margin: 10px 10px;
   padding: 5px 30px;
-  border: 2px solid #fd2d01;
-  border-radius: 10px;
+  border: 2px solid #b4b3b2;
+  border-radius: 6px;
   text-decoration: none;
   color: #000000;
-  background: #ffd7d7;
+  background: #e8e8e8;
   font-size: 1rem;
   cursor: pointer;
 }
@@ -375,7 +376,15 @@ input {
 .espacement {
   margin-left: 10px;
 }
-
+.bouton-supp {
+  margin: 10px 10px;
+  padding: 5px 30px;
+  border: 2px solid #f68c76;
+  border-radius: 6px;
+  background: #ffd7d7;
+  font-size: 1rem;
+  cursor: pointer;
+}
 .submit {
   margin-bottom: 30px;
 }
@@ -415,6 +424,16 @@ input {
 
   .espacement {
     margin-left: 0;
+  }
+  .bouton-create-comment {
+    margin: 50px 0 20px 0;
+    padding: 5px;
+    border: 2px solid #b4b3b2;
+    border-radius: 10px;
+    background: #daf3f2;
+    font-size: 15px;
+    width: 50%;
+    cursor: pointer;
   }
 }
 </style>

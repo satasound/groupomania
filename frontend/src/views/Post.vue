@@ -2,13 +2,11 @@
   <div>
     <HeaderProfile />
     <section>
-      <div class="card" id="cardGlobale" style="width: 50rem">
-        <div class="card-header">
-          <!--User infos-->
-          <div class="card" id="userInfos">
-            <div class="card-body" id="infos">
+      <div class="header">
+        <div>
+          <div class="info">
+            <p>
               Posté par <b>{{ post.user.prenom }} {{ post.user.nom }}</b>
-
               <img
                 class="photo-profile"
                 v-if="post.user.image"
@@ -21,30 +19,36 @@
                 src="../assets/images/photo-profile.jpg"
                 alt="photo de profile"
               /><br />
-              <span class="card-text"
-                >le {{ dateFormat(post.created_date) }}</span
-              >&nbsp;
-              <span class="card-text"
-                >à {{ hourFormat(post.updated_date) }}</span
-              >
-              <p v-if="post.created_date != post.updated_date" class="info">
-                Modifié le <b>{{ dateFormat(post.updated_date) }}</b> à
-                <b>{{ hourFormat(post.updated_date) }}</b>
-              </p>
-            </div>
-            <h3 class="card-title" id="titre">{{ post.title }}</h3>
+              le <b>{{ dateFormat(post.created_date) }}</b> à
+              <b>{{ hourFormat(post.created_date) }}</b
+              ><br />
+            </p>
+            <p v-if="post.created_date != post.updated_date">
+              Modifié le <b>{{ dateFormat(post.updated_date) }}</b> à
+              <b>{{ hourFormat(post.updated_date) }}</b>
+            </p>
+            <hr />
+            <h1>{{ post.title }}</h1>
           </div>
-          <!--END User infos-->
-        </div>
-
-        <div class="card-body" id="article">
-          <p class="card-text">
-            {{ post.content }}
-          </p>
-          <img :src="post.imageUrl" class="card-img-top imageUrl" alt="..." />
         </div>
       </div>
 
+      <div class="content">
+        <p class="modif">
+          <button
+            @click="deletePost()"
+            v-if="post.user_id === id || role === 1"
+            class="button espacement"
+            aria-label="Supprimer ce post"
+          >
+            <i class="far fa-trash-alt"></i> Supprimer
+          </button>
+        </p>
+        <hr v-if="post.user_id === id || role === 1" />
+        <img v-if="post.image" :src="post.image" alt="Image du post" />
+        <p>{{ post.content }}</p>
+      </div>
+      <!---------------------------Comments----->
       <article>
         <div
           v-bind:key="index"
@@ -89,7 +93,7 @@
       <button
         v-if="displayCreateComment === false"
         v-on:click="show"
-        class="button"
+        class="button bouton-create-comment"
         aria-label="Ecrire un commentaire"
       >
         Ecrire un commentaire
@@ -104,14 +108,17 @@
         ></textarea>
         <button
           @click="createComment()"
-          class="buttonenvoyer"
+          class="bouton-create-comment"
           aria-label="Envoyer le commentaire"
         >
           Envoyer le commentaire
         </button>
       </article>
     </section>
-    <router-link to="/allposts" class="button link" aria-label="Retour au post"
+    <router-link
+      to="/allposts"
+      class="button link bouton-create-comment"
+      aria-label="Retour au post"
       >Retour aux posts</router-link
     >
   </div>
@@ -277,10 +284,18 @@ section {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 60%;
+  margin: 50px auto;
 }
-
+article {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 50px auto;
+}
 h1 {
-  font-size: 1.5rem;
+  font-size: 2vw;
   margin: 30px 0 10px 0;
 }
 
@@ -288,28 +303,32 @@ textarea {
   font-size: 1.2rem;
 }
 
-.header,
-.content {
-  width: 50%;
-  background: #ffd7d7;
-  border: 2px solid #fd2d01;
-}
-
 .header {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-radius: 20px 20px 0 0;
+  width: 100%;
+  background: #daf3f2;
+  border-radius: 8px 8px 0 0;
+  border: 2px solid #b4b3b2;
 }
 
 .content {
-  border-radius: 0 0 20px 20px;
+  width: 100%;
+  background: #eff8f8;
+  border: 2px solid #b4b3b2;
+  margin-bottom: 30px;
+  border-radius: 0 0 8px 8px;
 }
 
 .info {
-  font-size: 0.8rem;
+  margin-top: 5px;
+  font-size: 1vw;
 }
-
+.info p {
+  margin-bottom: 5px;
+  font-size: 1vw;
+}
+hr {
+  margin: 0;
+}
 .modif {
   margin: 0;
 }
@@ -326,14 +345,13 @@ textarea {
 .button {
   margin: 10px 0 30px 0;
   padding: 5px 25px;
-  border: 2px solid #fd2d01;
-  border-radius: 10px;
-  background: #ffd7d7;
+  border: 2px solid #f68c76;
+  border-radius: 6px;
+  background: #f7dddd;
   font-size: 1rem;
   cursor: pointer;
 }
 
-.buttonenvoyer,
 .buttonannuler {
   margin: 10px 0 10px 0;
   padding: 5px 30px;
@@ -351,8 +369,8 @@ textarea {
 .button-comment {
   margin: 10px 0 0 0;
   padding: 5px 5px;
-  border: 2px solid #fd2d01;
-  border-radius: 10px;
+  border: 2px solid #f68c76;
+  border-radius: 6px;
   background: #ffd7d7;
   font-size: 1rem;
   cursor: pointer;
@@ -378,9 +396,10 @@ textarea {
 }
 
 .comment {
-  border: 2px solid #000000;
-  border-radius: 20px;
+  border: 2px solid #b4b3b2;
+  border-radius: 6px;
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .comment-info,
@@ -400,10 +419,20 @@ img {
 .photo-profile {
   width: 50px;
   height: 50px;
-  border: 2px solid #fd2d01;
-  border-radius: 30px;
+  border: 2px solid #94c9c7;
+  border-radius: 10px;
+  margin-left: 5px;
 }
-
+.bouton-create-comment {
+  margin: 50px 0 20px 0;
+  padding: 5px;
+  border: 2px solid #b4b3b2;
+  border-radius: 10px;
+  background: #daf3f2;
+  font-size: 15px;
+  width: 50%;
+  cursor: pointer;
+}
 @media screen and (max-width: 1024px) {
   .header,
   .content {

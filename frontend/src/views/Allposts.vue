@@ -1,32 +1,26 @@
 <template>
-  <div class="container-fluid">
+  <div>
     <HeaderProfile />
 
-    <!--ECRIRE ARTICLE-->
     <button @click="createPost()" class="button">Créer un post</button>
 
-    <h2>Fil d'actualité</h2>
+    <h1>Fil d'actualité</h1>
 
-    <!--SI PAS D'ARTICLES-->
     <article v-if="posts.length == 0">
       <p>Désolé il n'y a aucune publication...</p>
     </article>
-    <!--GOLBAL-->
-    <div
-      class="card"
-      id="cardGlobale"
-      style="width: 50rem"
-      v-else
-      v-bind:key="index"
-      v-for="(post, index) in posts"
-    >
-      <router-link :to="`/post/${post.id}`" class="lien">
-        <div class="card-header">
-          <!--User infos-->
-          <div class="card" id="userInfos">
-            <div class="card-body" id="infos">
-              Posté par <b>{{ post.user.prenom }} {{ post.user.nom }}</b>
-
+    <article v-else v-bind:key="index" v-for="(post, index) in posts">
+      <router-link :to="`/post/${post.id}`" class="post">
+        <div class="header">
+          <div>
+            <p class="info">
+              Posté par
+              <b
+                >{{ post.user.nom }}
+                <span v-if="post.user.role != 0"
+                  >{{ post.user.prenom }}
+                </span></b
+              >
               <img
                 class="photo-profile"
                 v-if="post.user.image"
@@ -39,36 +33,31 @@
                 src="../assets/images/photo-profile.jpg"
                 alt="photo de profile"
               /><br />
-              <span class="card-text"
-                >le {{ dateFormat(post.created_date) }}</span
-              >&nbsp;
-              <span class="card-text"
-                >à {{ hourFormat(post.updated_date) }}</span
-              >
-              <p v-if="post.created_date != post.updated_date" class="info">
-                Modifié le <b>{{ dateFormat(post.updated_date) }}</b> à
-                <b>{{ hourFormat(post.updated_date) }}</b>
-              </p>
-            </div>
-            <h3 class="card-title" id="titre">{{ post.title }}</h3>
+              le <b>{{ dateFormat(post.created_date) }}</b> à
+              <b>{{ hourFormat(post.created_date) }}</b>
+            </p>
+            <p v-if="post.created_date != post.updated_date" class="info">
+              Modifié le <b>{{ dateFormat(post.updated_date) }}</b> à
+              <b>{{ hourFormat(post.updated_date) }}</b>
+            </p>
+            <hr />
+            <h2>{{ post.title }}</h2>
           </div>
-          <!--END User infos-->
         </div>
-
-        <!------------------------------------------------------------------------------------>
-        <!-- <p v-for="post in posts" :key="post.id">
-        {{ post.title }}
-      </p> -->
-
-        <div class="card-body" id="article">
-          <p class="card-text">
-            {{ post.content }}
-          </p>
-          <img :src="post.imageUrl" class="card-img-top imageUrl" alt="..." />
+        <div class="content">
+          <p class="message"></p>
+          <br />
+          <img
+            class="image"
+            v-if="post.image"
+            :src="post.image"
+            :alt="post.title"
+          />
+          <p class="text">{{ post.content }}</p>
           <p>{{ post.comments.length }} <i class="fas fa-comments link"></i></p>
         </div>
       </router-link>
-    </div>
+    </article>
   </div>
 </template>
 
@@ -125,75 +114,165 @@ export default {
 </script>
 
 <style scoped>
-.lien {
-  padding-left: 30px;
-  font-size: 1rem;
-  text-decoration: none;
-  cursor: pointer;
-  color: #525151;
+h1 {
+  width: 60%;
+  margin: 20px auto;
+  font-size: 1.7vw;
+  background: #e8e8e8;
+  border: 2px solid #b4b3b2;
+  border-radius: 5px;
+  padding: 8px;
 }
-h3 {
+
+h2 {
+  font-size: 2vw;
+  margin: 10px 0;
 }
-.container-fluid {
-  margin: 40px auto;
-  padding: 20px;
+
+.info {
+  margin: 5px 0 5px 0;
+  font-size: 0.9vw;
 }
-form {
-  width: 50rem;
-  margin: 40px auto;
+hr {
+  margin: 0;
 }
-#article {
-  background-color: #daf3f2 !important;
+.image {
+  height: 15vw;
+  border-radius: 30px;
 }
-#cardGlobale {
-  padding: 0;
-  margin: 40px auto;
-}
-.card-header {
-  padding: 0;
-}
-.card {
-  margin: 0 auto;
-}
-#userInfos {
-  flex-direction: column;
-  background-color: #f7e6e6 !important;
-}
-#infos {
-  font-size: 1vw;
-  background-color: #e7e7e7;
-}
-#commentInfos {
-  flex-direction: row;
-}
-.card-body {
-  text-align: center;
-  border-bottom: 2px solid rgb(185, 181, 181);
-}
-.photo-profile {
-  width: 6%;
-  margin: 0 5px 5px;
-}
-.likes {
+article {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #000000;
+  width: 60%;
+  margin: auto;
 }
-/* .card .likes .link img {
-  max-width: 100%;
-  width: 80%;
-} */
+.post {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #000000;
+  width: 100%;
+}
+.header {
+  width: 100%;
+  background: #daf3f2;
+  border-radius: 8px 8px 0 0;
+  border: 2px solid #b4b3b2;
+}
+.content {
+  width: 100%;
+  background: #eff8f8;
+  border: 2px solid #b4b3b2;
+  margin-bottom: 30px;
+  border-radius: 0 0 8px 8px;
+}
 
-.card img {
-  /* width: 80%; */
-  /* max-width: 100%;
-  height: auto;
-  padding: 1.25rem; */
-}
-hr.style1 {
-  border-top: 1px solid #000000;
+.button {
+  margin: 50px 0 20px 0;
+  padding: 5px 40%;
+  border: 2px solid #b4b3b2;
+  border-radius: 10px;
+  background: #daf3f2;
+  font-size: 15px;
+  cursor: pointer;
 }
 
-/* .row {
-  display: inline;
-} */
+::placeholder {
+  text-align: center;
+  font-size: 1.3vw;
+}
+
+.photo-profile {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #94c9c7;
+  border-radius: 100px;
+}
+
+.text {
+  font-size: 1.4vw;
+}
+
+@media screen and (max-width: 1024px) {
+  h1 {
+    font-size: 1.7rem;
+    width: 63%;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin: 20px 0 10px 0;
+  }
+
+  .info {
+    font-size: 0.9rem;
+  }
+
+  .image {
+    height: 30vw;
+  }
+
+  .header,
+  .content {
+    width: 70%;
+  }
+
+  .text {
+    font-size: 2vw;
+  }
+
+  ::placeholder {
+    font-size: 20px;
+  }
+
+  article {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #000000;
+    width: 90%;
+    margin: auto;
+  }
+
+  .photo-profile {
+    width: 50px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  h1 {
+    width: 98%;
+    margin-left: 5px;
+    font-size: 1.2rem;
+  }
+
+  .button {
+    font-size: 10px;
+  }
+
+  .header,
+  .content {
+    width: 98%;
+  }
+
+  .text {
+    font-size: 1.3rem;
+  }
+
+  .image {
+    height: 40vw;
+  }
+
+  ::placeholder {
+    font-size: 1rem;
+  }
+
+  @media screen and (max-width: 360px) {
+  }
+}
 </style>
