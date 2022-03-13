@@ -67,13 +67,14 @@ exports.login = (req, res, next) => {
       if (!user) {
         return res.status(401).json('Utilisateur non trouvé !');
       }
+      // Verification du mot de passe
       bcrypt
         .compare(req.body.password, user.password)
         .then((valid) => {
           if (!valid) {
             return res.status(401).json('Mot de passe incorrect !');
           }
-
+          // Enregistrement des données et du TOKEN
           res.status(200).json({
             userId: user.id,
             user: user,
@@ -114,6 +115,7 @@ exports.getOneUser = (req, res, next) => {
  *************************************************/
 exports.modifyUser = (req, res, next) => {
   /////////////////////////////////////////
+  // Extraire les donées du TOKEN
   const token = req.headers.authorization.split(' ')[1];
   const decodedToken = jwt.verify(token, process.env.TOKEN);
   const userId = decodedToken.userId;
@@ -123,9 +125,15 @@ exports.modifyUser = (req, res, next) => {
     user
       .findOne({ where: { id: req.params.id } })
       .then((User) => {
+        //
+        /***Seul le user connecté OU l'Admin peuvent faire la modif ***/
         if (userId === User.id || role === 1) {
+          //
+          //Si l'image existe
           if (User.image) {
             const filename = User.image.split('/images/')[1];
+            //
+            //Supprimer l'image
             fs.unlink(`images/${filename}`, () => {
               const modifyUser = {
                 nom: req.body.nom,
@@ -140,6 +148,8 @@ exports.modifyUser = (req, res, next) => {
                 .then(() => res.status(200).json({ message: 'Utilisateur modifié !' }))
                 .catch((error) => res.status(400).json({ error }));
             });
+            //
+            //Si l'image n'existe pas
           } else {
             const modifyUser = {
               nom: req.body.nom,
