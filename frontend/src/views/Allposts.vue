@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderProfile />
+    <HeaderAdmin />
 
     <button @click="createPost()" class="button">Créer un post</button>
 
@@ -33,12 +33,12 @@
                 src="../assets/images/photo-profile.jpg"
                 alt="photo de profile"
               /><br />
-              le <b>{{ dateFormat(post.created_date) }}</b> à
-              <b>{{ hourFormat(post.created_date) }}</b>
+              le <b>{{ formatDate(post.created_date) }}</b> à
+              <b>{{ formatTime(post.created_date) }}</b>
             </p>
             <p v-if="post.created_date != post.updated_date" class="info">
-              Modifié le <b>{{ dateFormat(post.updated_date) }}</b> à
-              <b>{{ hourFormat(post.updated_date) }}</b>
+              Modifié le <b>{{ formatDate(post.updated_date) }}</b> à
+              <b>{{ formatTime(post.updated_date) }}</b>
             </p>
             <hr />
             <h2>{{ post.title }}</h2>
@@ -47,14 +47,18 @@
         <div class="content">
           <p class="message"></p>
           <br />
+          <p class="text">{{ post.content }}</p>
           <img
-            class="image"
+            class="post-image"
             v-if="post.image"
             :src="post.image"
             :alt="post.title"
           />
-          <p class="text">{{ post.content }}</p>
-          <p>{{ post.comments.length }} <i class="fas fa-comments link"></i></p>
+          <!-- <p>{{ post.comments.length }} <i class="fas fa-comments link"></i></p> -->
+          <p>
+            {{ post.comments.length }}
+            <i class="fas fa-comments link"></i>Commentaires
+          </p>
         </div>
       </router-link>
     </article>
@@ -62,12 +66,12 @@
 </template>
 
 <script>
-import HeaderProfile from "../components/HeaderProfile";
+import HeaderAdmin from "../components/HeaderAdmin";
 
 export default {
   name: "allposts",
   components: {
-    HeaderProfile,
+    HeaderAdmin,
   },
   data() {
     return {
@@ -75,7 +79,7 @@ export default {
     };
   },
   methods: {
-    getPosts() {
+    getAllPosts() {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
       fetch("http://localhost:3000/api/posts/", {
@@ -88,18 +92,17 @@ export default {
         .then((data) => (this.posts = data))
         .catch((error) => console.log(error));
     },
-    dateFormat(createdDate) {
+    formatDate(createdDate) {
       const date = new Date(createdDate);
       const options = {
-        weekday: "long",
         day: "numeric",
-        month: "long",
+        month: "numeric",
         year: "numeric",
       };
       return date.toLocaleDateString("fr-FR", options);
     },
-    hourFormat(createdHour) {
-      const hour = new Date(createdHour);
+    formatTime(createdTime) {
+      const hour = new Date(createdTime);
       const options = { hour: "numeric", minute: "numeric", second: "numeric" };
       return hour.toLocaleTimeString("fr-FR", options);
     },
@@ -108,7 +111,7 @@ export default {
     },
   },
   mounted() {
-    this.getPosts();
+    this.getAllPosts();
   },
 };
 </script>
@@ -139,6 +142,10 @@ hr {
 .image {
   height: 15vw;
   border-radius: 30px;
+}
+.post-image {
+  height: 20vw;
+  border-radius: 6px;
 }
 article {
   display: flex;
@@ -195,6 +202,9 @@ article {
 
 .text {
   font-size: 1.4vw;
+}
+.content p {
+  margin: 1rem;
 }
 
 @media screen and (max-width: 1024px) {

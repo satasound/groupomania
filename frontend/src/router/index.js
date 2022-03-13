@@ -6,7 +6,7 @@ import Allposts from '../views/Allposts.vue';
 import Profile from '../views/Profile.vue';
 import Post from '../views/Post.vue';
 import Createpost from '../views/Createpost.vue';
-import Adminusers from '../views/Adminusers.vue';
+import Admin from '../views/Admin.vue';
 
 Vue.use(VueRouter);
 
@@ -42,9 +42,9 @@ const routes = [
     component: Createpost,
   },
   {
-    path: '/admin/users',
-    name: 'AdminUsers',
-    component: Adminusers,
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
   },
 ];
 

@@ -1,24 +1,46 @@
 <template>
   <header class="nav">
-    <a href="/"
+    <router-link to="/allposts"
       ><img src="../assets/images/logo2.png" alt="Logo Groupomania"
-    /></a>
+    /></router-link>
     <nav>
-      <router-link to="/signup" class="link" aria-label="Inscription"
-        >Inscription</router-link
-      >
+      <router-link to="/admin" v-if="role === 1" aria-label="Administration"
+        ><i class="fas fa-user-lock link"></i
+      ></router-link>
+      <router-link to="/profile" aria-label="Profil"
+        ><i class="fas fa-user-circle link"></i
+      ></router-link>
+      <a class="link disconnect" @click="disconnectUser()">Deconnexion</a>
     </nav>
   </header>
 </template>
 
+
 <script>
 export default {
-  name: "Header",
+  name: "HeaderAdmin",
+  data() {
+    return {
+      role: "",
+    };
+  },
+  methods: {
+    disconnectUser() {
+      localStorage.clear();
+      this.$router.push("/");
+    },
+    roleUser() {
+      this.role = JSON.parse(localStorage.getItem("role"));
+    },
+  },
+  mounted() {
+    this.roleUser();
+  },
 };
 </script>
 
-// <!-- Add "scoped" attribute to limit CSS to this component only -->
- <style scoped>
+
+<style scoped>
 header {
   display: flex;
   align-items: center;
@@ -81,6 +103,7 @@ img {
   .link {
     padding: 0 30px;
     font-size: 15px;
+    cursor: pointer;
   }
 }
 </style>

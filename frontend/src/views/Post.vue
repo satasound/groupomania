@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderProfile />
+    <HeaderAdmin />
     <section>
       <div class="header">
         <div>
@@ -11,21 +11,21 @@
                 class="photo-profile"
                 v-if="post.user.image"
                 :src="post.user.image"
-                alt="photo de profile"
+                alt="photo du profile"
               />
               <img
                 class="photo-profile"
                 v-else
                 src="../assets/images/photo-profile.jpg"
-                alt="photo de profile"
+                alt="photo du profile"
               /><br />
-              le <b>{{ dateFormat(post.created_date) }}</b> à
-              <b>{{ hourFormat(post.created_date) }}</b
+              le <b>{{ formatDate(post.created_date) }}</b> à
+              <b>{{ formatTime(post.created_date) }}</b
               ><br />
             </p>
             <p v-if="post.created_date != post.updated_date">
-              Modifié le <b>{{ dateFormat(post.updated_date) }}</b> à
-              <b>{{ hourFormat(post.updated_date) }}</b>
+              Modifié le <b>{{ formatDate(post.updated_date) }}</b> à
+              <b>{{ formatTime(post.updated_date) }}</b>
             </p>
             <hr />
             <h1>{{ post.title }}</h1>
@@ -41,12 +41,12 @@
             class="button espacement"
             aria-label="Supprimer ce post"
           >
-            <i class="far fa-trash-alt"></i> Supprimer
+            <i class="far fa-trash-alt"></i>
           </button>
         </p>
         <hr v-if="post.user_id === id || role === 1" />
-        <img v-if="post.image" :src="post.image" alt="Image du post" />
         <p>{{ post.content }}</p>
+        <img v-if="post.image" :src="post.image" alt="Image du post" />
       </div>
       <!---------------------------Comments----->
       <article>
@@ -63,16 +63,16 @@
                 class="photo-profile"
                 v-if="comment.user.image"
                 :src="comment.user.image"
-                alt="photo de profile"
+                alt="photo du profile"
               />
               <img
                 class="photo-profile"
                 v-else
                 src="../assets/images/photo-profile.jpg"
-                alt="photo de profile"
+                alt="photo du profile"
               /><br />
-              le <b>{{ dateFormat(comment.date) }}</b> à
-              <b>{{ hourFormat(comment.date) }}</b>
+              le <b>{{ formatDate(comment.date) }}</b> à
+              <b>{{ formatTime(comment.date) }}</b>
             </p>
             <p>
               <button
@@ -91,14 +91,14 @@
       </article>
 
       <button
-        v-if="displayCreateComment === false"
+        v-if="showCreateComment === false"
         v-on:click="show"
         class="button bouton-create-comment"
         aria-label="Ecrire un commentaire"
       >
         Ecrire un commentaire
       </button>
-      <article v-if="displayCreateComment" class="createcomment">
+      <article v-if="showCreateComment" class="createcomment">
         <textarea
           v-model="commentaire"
           placeholder="Commentaire"
@@ -111,7 +111,7 @@
           class="bouton-create-comment"
           aria-label="Envoyer le commentaire"
         >
-          Envoyer le commentaire
+          Enregistrer le commentaire
         </button>
       </article>
     </section>
@@ -125,12 +125,12 @@
 </template>
 
 <script>
-import HeaderProfile from "../components/HeaderProfile";
+import HeaderAdmin from "../components/HeaderAdmin";
 
 export default {
   name: "Post",
   components: {
-    HeaderProfile,
+    HeaderAdmin,
   },
   data() {
     return {
@@ -146,8 +146,8 @@ export default {
         user_id: "",
       },
       comments: [],
-      displaycomments: false,
-      displayCreateComment: false,
+      showcomments: false,
+      showCreateComment: false,
       commentaire: "",
       id: "",
       role: "",
@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     show: function () {
-      return (this.displayCreateComment = true);
+      return (this.showCreateComment = true);
     },
     User() {
       this.id = JSON.parse(localStorage.getItem("userId"));
@@ -189,7 +189,7 @@ export default {
         .then((data) => (this.comments = data))
         .catch(alert);
     },
-    dateFormat(createdDate) {
+    formatDate(createdDate) {
       const date = new Date(createdDate);
       const options = {
         weekday: "long",
@@ -199,15 +199,15 @@ export default {
       };
       return date.toLocaleDateString("fr-FR", options);
     },
-    hourFormat(createdHour) {
-      const hour = new Date(createdHour);
+    formatTime(createdDate) {
+      const hour = new Date(createdDate);
       const options = { hour: "numeric", minute: "numeric", second: "numeric" };
       return hour.toLocaleTimeString("fr-FR", options);
     },
     deletePost() {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
-      if (confirm("Voulez-vous vraiment supprimer le post") === true) {
+      if (confirm("Confirmer la suppressin du post") === true) {
         fetch(`http://localhost:3000/api/posts/${this.id_param}`, {
           method: "DELETE",
           headers: {
@@ -223,7 +223,7 @@ export default {
     },
     createComment() {
       if (this.commentaire === "") {
-        alert("Veuillez remplir votre commentaire");
+        alert("Veuillez rédiger lecommentaire");
       } else {
         const Id = JSON.parse(localStorage.getItem("userId"));
         const token = JSON.parse(localStorage.getItem("userToken"));
@@ -255,7 +255,7 @@ export default {
     deleteComment(index) {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
-      if (confirm("Voulez-vous vraiment supprimer ce commentaire") === true) {
+      if (confirm("Confirmer la suppressin du commentaire") === true) {
         fetch(`http://localhost:3000/api/comments/${this.comments[index].id}`, {
           method: "DELETE",
           headers: {
@@ -264,7 +264,7 @@ export default {
         })
           .then((response) => response.json())
           .then(() => {
-            alert("La suppression du commentaire est bien prise en compte");
+            alert("Commentaire supprimé");
             this.$router.go();
           })
           .catch(alert);
@@ -342,36 +342,13 @@ hr {
   flex-direction: column;
 }
 
-.button {
+.button,
+.button-comment {
   margin: 10px 0 30px 0;
-  padding: 5px 25px;
+  padding: 5px 10px;
   border: 2px solid #f68c76;
   border-radius: 6px;
   background: #f7dddd;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.buttonannuler {
-  margin: 10px 0 10px 0;
-  padding: 5px 30px;
-  border: 2px solid #fd2d01;
-  border-radius: 10px;
-  background: #ffd7d7;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.buttonannuler {
-  margin-bottom: 40px;
-}
-
-.button-comment {
-  margin: 10px 0 0 0;
-  padding: 5px 5px;
-  border: 2px solid #f68c76;
-  border-radius: 6px;
-  background: #ffd7d7;
   font-size: 1rem;
   cursor: pointer;
 }
@@ -383,16 +360,6 @@ hr {
 .link {
   text-decoration: none;
   color: #000000;
-}
-
-.comment-button {
-  margin: 10px 0 30px 0;
-  padding: 5px 30px;
-  border: 2px solid #fd2d01;
-  border-radius: 10px;
-  background: #ffd7d7;
-  font-size: 1rem;
-  cursor: pointer;
 }
 
 .comment {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderProfile />
+    <HeaderAdmin />
     <div>
       <h1>Mon compte</h1>
       <form>
@@ -57,16 +57,16 @@
               v-if="!user.image"
               for="file"
               class="label-file bouton-create-comment"
-              aria-label="Choisir la photo de profile"
-              >Choisir une photo de profile</label
+              aria-label="Choisir l'image du profile"
+              >Choisir une image du profile</label
             >
             <button
               v-else
               @click="deletefile()"
               class="label-file"
-              aria-label="Supprimer la photo de profile"
+              aria-label="Supprimer l'image du profile'"
             >
-              Supprimer cette photo de profile
+              Supprimer cette image
             </button>
             <input
               type="file"
@@ -74,23 +74,25 @@
               v-on:change="uploadFile"
               id="file"
               class="input-file"
-              aria-label="Photo de profile"
+              aria-label="Image du profile"
             />
           </li>
         </ul>
         <div class="submit">
           <button
             @click="updateUser()"
-            class="button"
-            aria-label="Modifier le compte de cet utilisateur"
+            class="button modif"
+            aria-label="Modifier mon compte"
           >
+            Enregistrer les modification
             <i class="fas fa-edit"></i>
           </button>
           <button
             @click="deleteUser()"
             class="button bouton-supp"
-            aria-label="Supprimer le compte de cet utilisateur"
+            aria-label="Supprimer mon compte"
           >
+            Supprimer mon compte
             <i class="far fa-trash-alt"></i>
           </button>
         </div>
@@ -106,12 +108,12 @@
 </template>
 
 <script>
-import HeaderProfile from "../components/HeaderProfile";
+import HeaderAdmin from "../components/HeaderAdmin";
 
 export default {
   name: "Profile",
   components: {
-    HeaderProfile,
+    HeaderAdmin,
   },
   data() {
     return {
@@ -368,7 +370,17 @@ input {
   font-size: 1rem;
   cursor: pointer;
 }
-
+.modif {
+  margin: 10px 10px;
+  padding: 5px 30px;
+  border: 2px solid #b4b3b2;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #000000;
+  background: #daf3f2;
+  font-size: 1rem;
+  cursor: pointer;
+}
 .label-file {
   margin-bottom: 30px;
 }

@@ -52,12 +52,6 @@
         />
       </div>
 
-      <!--IMAGE-->
-      <div class="mb-3">
-        <label for="image" class="form-label">Image du profile</label>
-        <input class="form-control" type="file" id="image" />
-      </div>
-
       <!--SUBMIT-->
       <button type="submit" class="btn btn-primary">Créer un compte</button>
       <!-- <b-button type="submit" :class="{ disabled: !validatedFields() }"
@@ -75,6 +69,7 @@
 
 <script>
 import Header from "../components/Header";
+import axios from "axios";
 
 export default {
   name: "signup",
@@ -88,26 +83,14 @@ export default {
       prenom: "",
       email: "",
       password: "",
-      image: "",
     };
   },
 
   methods: {
-    /* Bind image function */
-
     signup() {
-      this.image = document.getElementById("image").value;
-      let data = {
-        nom: this.nom,
-        prenom: this.prenom,
-        email: this.email,
-        password: this.password,
-        image: this.image,
-      };
-
       const regexText = /^[a-zA-Z-\s]+$/;
       const regexEmail =
-        /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/; // eslint-disable-line
+        /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
       const regexPassword = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{3,50}$/;
 
       if (this.nom === "") {
@@ -139,30 +122,20 @@ export default {
         regexText.test(this.prenom) === true &&
         regexEmail.test(this.email) === true &&
         regexPassword.test(this.password) === true
-      ) {
-        fetch("http://localhost:3000/api/auth/signup", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              return response.text().then((text) => {
-                throw new Error(text);
-              });
-            }
-          })
-          .then(() => {
-            alert("Inscription effectuée");
-            this.$router.push("/");
-          })
-          .catch(alert);
-      }
+      )
+        try {
+          const response = axios.post("http://localhost:3000/api/auth/signup", {
+            nom: this.nom,
+            prenom: this.prenom,
+            email: this.email,
+            password: this.password,
+          });
+          console.log(response);
+          alert("Inscription effectuée");
+          this.$router.push("/");
+        } catch (error) {
+          console.error(error);
+        }
     },
   },
 };

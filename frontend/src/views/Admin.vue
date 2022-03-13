@@ -1,18 +1,27 @@
 <template>
   <div>
-    <HeaderProfile />
+    <HeaderAdmin />
     <article>
       <table>
         <tr>
+          <th>Image</th>
           <th>Nom</th>
           <th>Prénom</th>
           <th>Email</th>
           <th>Rôle</th>
-          <th>Photo de profile</th>
         </tr>
         <tr v-bind:key="index" v-for="(user, index) in filterList">
           <td>
-            <input type="text" v-model="user.nom" required aria-label="Nom" />
+            <img v-if="user.image" :src="user.image" alt="Image du profile" />
+          </td>
+          <td>
+            <input
+              type="text"
+              v-model="user.nom"
+              required
+              aria-label="Nom"
+              disabled
+            />
           </td>
           <td>
             <input
@@ -20,6 +29,7 @@
               v-model="user.prenom"
               required
               aria-label="Prénom"
+              disabled
             />
           </td>
           <td>
@@ -27,8 +37,8 @@
               type="text"
               v-model="user.email"
               required
-              class="email"
               aria-label="Email"
+              disabled
             />
           </td>
           <td>
@@ -44,9 +54,7 @@
               </option>
             </select>
           </td>
-          <td>
-            <img v-if="user.image" :src="user.image" alt="photo de e" />
-          </td>
+
           <button
             @click="modifyUser(index)"
             aria-label="Modifier cet utilisateur"
@@ -56,6 +64,7 @@
           <button
             @click="deleteUser(index)"
             aria-label="Supprimer cet utilisateur"
+            class="buttonSupp"
           >
             <i class="far fa-trash-alt"></i>
           </button>
@@ -72,24 +81,23 @@
 </template>
 
 <script>
-import HeaderProfile from "../components/HeaderProfile";
+import HeaderAdmin from "../components/HeaderAdmin";
 
 export default {
-  name: "AdminUsers",
+  name: "Admin",
   components: {
-    HeaderProfile,
+    HeaderAdmin,
   },
   data() {
     return {
       users: [],
-      search: "",
       posts: [],
     };
   },
   computed: {
     filterList() {
       return this.users.filter((user) => {
-        return user.nom.toLowerCase().includes(this.search.toLowerCase());
+        return user.nom.toLowerCase();
       });
     },
   },
@@ -190,20 +198,21 @@ export default {
 
 <style scoped>
 table {
-  width: 100%;
+  width: 95%;
   font-size: 1vw;
-  background: #ffd7d7;
-  border: 2px solid #fd2d01;
-  border-radius: 20px;
-  margin: 0 0 30px 0;
+  background: #daf3f2;
+  border: 2px solid #90b9b8;
+  border-radius: 10px;
+  margin: 50px auto;
+  padding: 10px;
 }
 
 button {
   margin: 10px 5px 0 0;
   padding: 5px 5px;
-  border: 2px solid #fd2d01;
-  border-radius: 10px;
-  background: #ffd7d7;
+  border: 2px solid #90b9b8;
+  border-radius: 5px;
+  background: #bbeeec;
   font-size: 1vw;
   cursor: pointer;
   text-decoration: none;
@@ -213,19 +222,24 @@ button {
 .button {
   margin: 10px 0 30px 0;
   padding: 5px 3vw;
-  border: 2px solid #fd2d01;
-  border-radius: 10px;
-  background: #ffd7d7;
+  border: 2px solid #90b9b8;
+  border-radius: 6px;
+  background: #daf3f2;
   font-size: 1vw;
   cursor: pointer;
   text-decoration: none;
   color: #000000;
 }
-
-.search {
-  margin-bottom: 30px;
+.buttonSupp {
+  margin: 10px 0 30px 0;
+  padding: 5px;
   border: 2px solid #fd2d01;
-  font-size: 1.5vw;
+  border-radius: 5px;
+  background: #ffd7d7;
+  font-size: 1vw;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000000;
 }
 
 input {

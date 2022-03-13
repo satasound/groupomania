@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderProfile />
+    <HeaderAdmin />
     <section>
       <h1>Création d'un post</h1>
       <form>
@@ -72,12 +72,12 @@
 
 
 <script>
-import HeaderProfile from "../components/HeaderProfile";
+import HeaderAdmin from "../components/HeaderAdmin";
 
 export default {
   name: "createpost",
   components: {
-    HeaderProfile,
+    HeaderAdmin,
   },
   data() {
     return {
@@ -172,11 +172,13 @@ export default {
 
 <style scoped>
 h1 {
-  width: 100%;
-  font-size: 2rem;
-  background: #ffd7d7;
-  border: 2px solid #fd2d01;
-  border-radius: 20px;
+  margin: 50px auto;
+  padding: 10px;
+  border: 2px solid #b4b3b2;
+  background: #e8e8e8;
+  font-size: 15px;
+  cursor: pointer;
+  width: 55%;
 }
 
 ul {
@@ -197,8 +199,8 @@ input {
   width: 300px;
   height: 300px;
   margin-top: 10px;
-  border: 2px solid #fd2d01;
-  border-radius: 30px;
+  border: 2px solid #69bdba;
+  border-radius: 10px;
   padding: 5px;
 }
 
@@ -214,9 +216,9 @@ textarea {
 .label-file {
   margin: 10px 0 30px 0;
   padding: 5px 30px;
-  border: 2px solid #fd2d01;
+  border: 2px solid #b4b3b2;
   border-radius: 10px;
-  background: #ffd7d7;
+  background: #daf3f2;
   font-size: 1rem;
   cursor: pointer;
 }
