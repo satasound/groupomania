@@ -9,6 +9,7 @@
           <th>Prénom</th>
           <th>Email</th>
           <th>Rôle</th>
+          <th>Status</th>
         </tr>
         <tr v-bind:key="index" v-for="(user, index) in filterList">
           <td>
