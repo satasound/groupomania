@@ -102,6 +102,9 @@ export default {
     },
   },
   methods: {
+    /**********************************************
+     **************     GET USERS      ***********
+     **********************************************/
     getUsers() {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
@@ -115,10 +118,14 @@ export default {
         .then((data) => (this.users = data))
         .catch(alert);
     },
+    /*************************************************
+     ***************   DELETE USER      *************
+     *************************************************/
     deleteUser(index) {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
-      if (confirm("Voulez-vous vraiment supprimer cet utilisateur") === true) {
+      if (confirm("Confirmer la suppression de cet utilisateur") === true) {
+        /*******  FETCH des posts de l'utilisateur ********/
         fetch(
           `http://localhost:3000/api/posts/${this.filterList[index].id}/posts`,
           {
@@ -131,11 +138,13 @@ export default {
           .then((response) => response.json())
           .then((data) => (this.posts = data))
           .then(() => {
-            let publication = this.posts;
+            /******** Boucle pour retrouver les posts concernés  *********/
+            let userPosts = this.posts;
 
-            for (let i = 0; i < publication.length; i++) {
-              if (publication[i].image) {
-                fetch(`http://localhost:3000/api/posts/${publication[i].id}`, {
+            for (let i = 0; i < userPosts.length; i++) {
+              if (userPosts[i].image) {
+                /********  suppression des posts  ********/
+                fetch(`http://localhost:3000/api/posts/${userPosts[i].id}`, {
                   method: "DELETE",
                   headers: {
                     authorization: `Bearer ${token}`,
@@ -147,6 +156,7 @@ export default {
             }
           })
           .then(() => {
+            /******** suppression du user ********/
             fetch(
               `http://localhost:3000/api/auth/${this.filterList[index].id}`,
               {
@@ -165,10 +175,13 @@ export default {
           .catch((error) => console.log(error));
       }
     },
+    /*************************************************
+     ****************   MODIFY USER      **************
+     *************************************************/
     modifyUser(index) {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
-      if (confirm("Voulez-vous vraiment modifier cet utilisateur") === true) {
+      if (confirm("Confirmer la modification de cet utilisateur") === true) {
         fetch(
           `http://localhost:3000/api/auth/admin/${this.filterList[index].id}`,
           {
@@ -253,7 +266,7 @@ hr {
 img {
   width: 50px;
   height: 50px;
-  border: 2px solid #fd2d01;
+  border: 2px solid #4b8d8c;
   border-radius: 30px;
 }
 

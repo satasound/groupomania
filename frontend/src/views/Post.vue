@@ -146,7 +146,6 @@ export default {
         user_id: "",
       },
       comments: [],
-      showcomments: false,
       showCreateComment: false,
       commentaire: "",
       id: "",
@@ -161,7 +160,9 @@ export default {
       this.id = JSON.parse(localStorage.getItem("userId"));
       this.role = JSON.parse(localStorage.getItem("role"));
     },
-
+    /*************************************************
+     ****************   GET POST      **************
+     *************************************************/
     getPost() {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
@@ -175,7 +176,9 @@ export default {
         .then((data) => (this.post = data))
         .catch(alert);
     },
-
+    /*************************************************
+     ****************   GET COMMENT      **************
+     *************************************************/
     getComments() {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
@@ -189,6 +192,9 @@ export default {
         .then((data) => (this.comments = data))
         .catch(alert);
     },
+    /*************************************************
+     **********   FORMATDATE FORMATTIME      ********
+     *************************************************/
     formatDate(createdDate) {
       const date = new Date(createdDate);
       const options = {
@@ -204,6 +210,9 @@ export default {
       const options = { hour: "numeric", minute: "numeric", second: "numeric" };
       return hour.toLocaleTimeString("fr-FR", options);
     },
+    /*************************************************
+     ****************   DELETE POST      **************
+     *************************************************/
     deletePost() {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
@@ -221,6 +230,9 @@ export default {
           .catch(alert);
       }
     },
+    /*************************************************
+     **************  CREATE COMMENT      **************
+     *************************************************/
     createComment() {
       if (this.commentaire === "") {
         alert("Veuillez rédiger lecommentaire");
@@ -252,6 +264,9 @@ export default {
           .catch((error) => console.log(error));
       }
     },
+    /*************************************************
+     ****************   DELETE COMMENT   **************
+     *************************************************/
     deleteComment(index) {
       const token = JSON.parse(localStorage.getItem("userToken"));
 

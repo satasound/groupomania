@@ -8,12 +8,12 @@
           <li>
             <label for="nom" aria-label="Nom de l'utilisateur">Nom</label>
             <input
+              required
               type="text"
               v-model="user.nom"
               id="nom"
               placeholder="Nom"
               size="50"
-              required
               aria-label="Nom de l'utilisateur"
             />
           </li>
@@ -22,31 +22,31 @@
               >Prénom</label
             >
             <input
+              required
               type="text"
               v-model="user.prenom"
               id="prenom"
               placeholder="Prenom"
               size="50"
-              required
               aria-label="Prénom de l'utilisateur"
             />
           </li>
           <li>
             <label for="email" aria-label="Email de l'utilisateur">Email</label>
             <input
+              required
               type="email"
               v-model="user.email"
               id="email"
               placeholder="Email"
               size="50"
-              required
               aria-label="Email de l'utilisateur"
             />
           </li>
           <li v-if="user.image">
             <img
               :src="user.image"
-              alt="Photo de profile"
+              alt="Photo du profile"
               class="file"
               width="200px"
               height="200px"
@@ -133,9 +133,12 @@ export default {
     this.getUser();
   },
   methods: {
-    show: function () {
-      return (this.button = true);
-    },
+    // show: function () {
+    //   return (this.button = true);
+    // },
+    /*************************************************
+     ****************   GET USER      **************
+     *************************************************/
     getUser() {
       const Id = JSON.parse(localStorage.getItem("userId"));
       const token = JSON.parse(localStorage.getItem("userToken"));
@@ -150,6 +153,9 @@ export default {
         .then((data) => (this.user = data))
         .catch(alert);
     },
+    /*************************************************
+     ****************   UPDATE USER      **************
+     *************************************************/
     updateUser() {
       const Id = JSON.parse(localStorage.getItem("userId"));
       const token = JSON.parse(localStorage.getItem("userToken"));
@@ -157,28 +163,18 @@ export default {
 
       const regexText = /^[a-zA-Z-\s]+$/;
       const regexEmail =
-        /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/; // eslint-disable-line
+        /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
 
-      if (this.user.nom === "") {
-        alert("Veuillez remplir votre nom");
-      } else if (regexText.test(this.user.nom) === false) {
-        alert(
-          "Veuillez vérifier que l'écriture de votre nom soit uniquement en lettre"
-        );
+      if (regexText.test(this.user.nom) === false) {
+        alert("Champ requis! Caractères alphabétiques uniquement");
       }
 
-      if (this.user.prenom === "") {
-        alert("Veuillez remplir votre prénom");
-      } else if (regexText.test(this.user.prenom) === false) {
-        alert(
-          "Veuillez vérifier que l'écriture de votre prénom soit uniquement en lettre"
-        );
+      if (regexText.test(this.user.prenom) === false) {
+        alert("Champ requis! Caractères alphabétiques uniquement");
       }
 
-      if (this.user.email === "") {
-        alert("Veuillez remplir votre adresse email");
-      } else if (regexEmail.test(this.user.email) === false) {
-        alert("Veuillez écrire une adresse email valide");
+      if (regexEmail.test(this.user.email) === false) {
+        alert("Champ requis! Adresse mail valide requise");
       } else if (
         regexText.test(this.user.nom) === true &&
         regexText.test(this.user.prenom) === true &&
@@ -201,7 +197,7 @@ export default {
           .then((response) => response.json())
           .then((data) => (this.user = data))
           .then(() => {
-            alert("Votre modification est bien prise en compte");
+            alert("Modifications enregistrées");
             this.$router.go();
           })
           .catch((error) => console.log(error));
@@ -211,9 +207,9 @@ export default {
         regexEmail.test(this.user.email) === true &&
         this.user.image != ""
       ) {
-        var fileName = document.getElementById("file").value;
-        var idxDot = fileName.lastIndexOf(".") + 1;
-        var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+        let fileName = document.getElementById("file").value;
+        let idxDot = fileName.lastIndexOf(".") + 1;
+        let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
 
         if (
           extFile === "jpg" ||
@@ -237,22 +233,23 @@ export default {
           })
             .then((response) => response.json())
             .then(() => {
-              alert("Votre modification est bien prise en compte");
+              alert("Modifications enregistrées");
               this.$router.go();
             })
             .catch((error) => console.log(error));
         } else {
-          alert(
-            "Uniquement les fichiers jpg, jpeg, png et webp sont acceptés!"
-          );
+          alert("Fichiers acceptés: jpg, jpeg, png, webp");
         }
       }
     },
+    /*************************************************
+     ****************   DELETE USER      **************
+     *************************************************/
     deleteUser() {
-      if (confirm("Voulez-vous vraiment supprimer le compte") == true) {
+      if (confirm("Confirmer la suppression du compte") == true) {
         const Id = JSON.parse(localStorage.getItem("userId"));
         const token = JSON.parse(localStorage.getItem("userToken"));
-
+        /*******  FETCH des posts de l'utilisateur ********/
         fetch(`http://localhost:3000/api/posts/${Id}/posts`, {
           method: "GET",
           headers: {
@@ -262,11 +259,12 @@ export default {
           .then((response) => response.json())
           .then((data) => (this.posts = data))
           .then(() => {
-            let pub = this.posts;
-
-            for (let i = 0; i < pub.length; i++) {
-              if (pub[i].image) {
-                fetch(`http://localhost:3000/api/posts/${pub[i].id}`, {
+            let userPosts = this.posts;
+            /******** Boucle pour retrouver les posts concernés  *********/
+            for (let i = 0; i < userPosts.length; i++) {
+              if (userPosts[i].image) {
+                /********  suppression des posts  ********/
+                fetch(`http://localhost:3000/api/posts/${userPosts[i].id}`, {
                   method: "DELETE",
                   headers: {
                     authorization: `Bearer ${token}`,
@@ -277,6 +275,7 @@ export default {
               }
             }
           })
+          /******** suppression du user ********/
           .then(() => {
             fetch(`http://localhost:3000/api/auth/${Id}`, {
               method: "DELETE",
@@ -286,15 +285,19 @@ export default {
             })
               .then((response) => response.json())
               .then(() => {
-                alert("La suppression du compte est bien prise en compte");
+                alert("Confirmer la suppression du compte");
               })
               .catch((error) => console.log(error));
           })
           .catch((error) => console.log(error));
       }
+      /*******  Redirection vers Accueil/login  *******/
       this.$router.push("/");
       localStorage.clear();
     },
+    /*************************************************
+     ****************   UPLOAD FILE      **************
+     *************************************************/
     uploadFile(e) {
       if (e.target.files) {
         let reader = new FileReader();
@@ -305,6 +308,7 @@ export default {
         reader.readAsDataURL(e.target.files[0]);
       }
     },
+    // DELETE FILE
     deletefile() {
       this.user.image = "";
     },
@@ -350,7 +354,7 @@ input {
   width: 200px;
   height: 200px;
   margin-top: 10px;
-  border: 2px solid #fd2d01;
+  border: 2px solid #377e7d;
   border-radius: 100px;
 }
 

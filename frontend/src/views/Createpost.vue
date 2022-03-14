@@ -93,9 +93,9 @@ export default {
       const fileField = document.querySelector('input[type="file"]');
       const token = JSON.parse(localStorage.getItem("userToken"));
 
-      if (this.titre === "") alert("Veuillez remplir le titre");
-      if (this.contenu === "") alert("Veuillez remplir le contenu du message");
-      if (this.image === "" && this.titre != "" && this.contenu != "") {
+      if (this.titre === "") alert("Veuillez saisir le titre");
+      if (this.contenu === "") alert("Veuillez saisir le message");
+      if (this.image === "" /* && this.titre != "" && this.contenu != ""*/) {
         let data = new FormData();
         data.append("title", this.titre);
         data.append("content", this.contenu);
@@ -115,7 +115,7 @@ export default {
             this.$router.push("/allposts");
           })
           .catch(alert);
-      } else if (this.titre != "" && this.contenu != "") {
+      } /*else if (this.titre != "" && this.contenu != "")*/ else {
         var fileName = document.getElementById("file").value;
         var idxDot = fileName.lastIndexOf(".") + 1;
         var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
@@ -146,9 +146,7 @@ export default {
             })
             .catch(alert);
         } else {
-          alert(
-            "Uniquement les fichiers jpg, jpeg, png, webp et gif sont acceptés!"
-          );
+          alert("Fichiers acceptés: jpg, jpeg, png, webp");
         }
       }
     },

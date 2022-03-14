@@ -79,6 +79,9 @@ export default {
     };
   },
   methods: {
+    /*************************************************
+     ****************   GET ALL POSTS      **************
+     *************************************************/
     getAllPosts() {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
@@ -92,6 +95,9 @@ export default {
         .then((data) => (this.posts = data))
         .catch((error) => console.log(error));
     },
+    /*************************************************
+     **********   FORMATDATE FORMATTIME      ********
+     *************************************************/
     formatDate(createdDate) {
       const date = new Date(createdDate);
       const options = {
@@ -106,6 +112,9 @@ export default {
       const options = { hour: "numeric", minute: "numeric", second: "numeric" };
       return hour.toLocaleTimeString("fr-FR", options);
     },
+    /*************************************************
+     **********   REDIRECTION CREATEPOST      ********
+     *************************************************/
     createPost() {
       this.$router.push("/createpost");
     },

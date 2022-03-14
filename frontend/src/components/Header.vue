@@ -35,6 +35,7 @@ img {
   padding-left: 5vw;
   font-size: 1.2rem;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .link:hover {
