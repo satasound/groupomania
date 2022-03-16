@@ -66,6 +66,7 @@
             @click="deleteUser(index)"
             aria-label="Supprimer cet utilisateur"
             class="buttonSupp"
+            v-if="user.role !== 1"
           >
             <i class="far fa-trash-alt"></i>
           </button>

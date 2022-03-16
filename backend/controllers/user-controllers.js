@@ -67,17 +67,15 @@ exports.login = (req, res, next) => {
       if (!user) {
         return res.status(401).json('Utilisateur non trouvé !');
       }
-      // Verification du mot de passe
       bcrypt
         .compare(req.body.password, user.password)
         .then((valid) => {
           if (!valid) {
             return res.status(401).json('Mot de passe incorrect !');
           }
-          // Enregistrement des données et du TOKEN
+
           res.status(200).json({
             userId: user.id,
-            user: user,
             image: user.image,
             role: user.role,
             token: jwt.sign({ userId: user.id, role: user.role }, process.env.TOKEN, { expiresIn: '24h' }),
@@ -87,7 +85,6 @@ exports.login = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
-
 /*************************************************
  ************  GET ALL USERS        **********
  *************************************************/
@@ -120,7 +117,7 @@ exports.modifyUser = (req, res, next) => {
   const decodedToken = jwt.verify(token, process.env.TOKEN);
   const userId = decodedToken.userId;
   const role = decodedToken.role;
-
+  // Si il y a un INPUT fichier image
   if (req.file) {
     user
       .findOne({ where: { id: req.params.id } })
@@ -175,7 +172,9 @@ exports.modifyUser = (req, res, next) => {
     user
       .findOne({ where: { id: req.params.id } })
       .then((User) => {
+        /***Seul le user connecté OU l'Admin peuvent faire la modif ***/
         if (userId === User.id || role === 1) {
+          //Si le champ image est vide
           if (User.image && req.body.image === '') {
             const filename = User.image.split('/images/')[1];
             fs.unlink(`images/${filename}`, () => {
