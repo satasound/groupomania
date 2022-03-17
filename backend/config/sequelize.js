@@ -1,6 +1,6 @@
-require('dotenv').config();
-const { Sequelize, DataTypes } = require('sequelize');
 
+const { Sequelize, DataTypes } = require('sequelize');
+require('dotenv').config();
 const sequelize = new Sequelize('groupomania', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',

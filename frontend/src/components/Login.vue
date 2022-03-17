@@ -27,7 +27,7 @@
         />
       </div>
 
-      <!-----------------SUBMIT--------------->
+      <!--SUBMI-->
       <button type="submit" class="btn btn-primary">Se connecter</button>
     </form>
   </div>
@@ -76,6 +76,7 @@ export default {
           localStorage.setItem("userToken", token);
           localStorage.setItem("userId", userId);
           localStorage.setItem("role", role);
+
           this.$router.push("/allposts");
         })
         .catch(alert);

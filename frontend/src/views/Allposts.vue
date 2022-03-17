@@ -79,10 +79,7 @@ export default {
     };
   },
   methods: {
-    /*************************************************
-     ****************   GET ALL POSTS      **************
-     *************************************************/
-    getAllPosts() {
+    getPosts() {
       const token = JSON.parse(localStorage.getItem("userToken"));
 
       fetch("http://localhost:3000/api/posts/", {
@@ -95,9 +92,7 @@ export default {
         .then((data) => (this.posts = data))
         .catch((error) => console.log(error));
     },
-    /*************************************************
-     **********   FORMATDATE FORMATTIME      ********
-     *************************************************/
+
     formatDate(createdDate) {
       const date = new Date(createdDate);
       const options = {
@@ -112,15 +107,12 @@ export default {
       const options = { hour: "numeric", minute: "numeric", second: "numeric" };
       return hour.toLocaleTimeString("fr-FR", options);
     },
-    /*************************************************
-     **********   REDIRECTION CREATEPOST      ********
-     *************************************************/
     createPost() {
       this.$router.push("/createpost");
     },
   },
   mounted() {
-    this.getAllPosts();
+    this.getPosts();
   },
 };
 </script>
@@ -135,12 +127,10 @@ h1 {
   border-radius: 5px;
   padding: 8px;
 }
-
 h2 {
   font-size: 2vw;
   margin: 10px 0;
 }
-
 .info {
   margin: 5px 0 5px 0;
   font-size: 0.9vw;
@@ -186,7 +176,6 @@ article {
   margin-bottom: 30px;
   border-radius: 0 0 8px 8px;
 }
-
 .button {
   margin: 50px 0 20px 0;
   padding: 5px 40%;
@@ -196,58 +185,47 @@ article {
   font-size: 15px;
   cursor: pointer;
 }
-
 ::placeholder {
   text-align: center;
   font-size: 1.3vw;
 }
-
 .photo-profile {
   width: 50px;
   height: 50px;
   border: 2px solid #94c9c7;
   border-radius: 100px;
 }
-
 .text {
   font-size: 1.4vw;
 }
 .content p {
   margin: 1rem;
 }
-
 @media screen and (max-width: 1024px) {
   h1 {
     font-size: 1.7rem;
     width: 63%;
   }
-
   h2 {
     font-size: 1.5rem;
     margin: 20px 0 10px 0;
   }
-
   .info {
     font-size: 0.9rem;
   }
-
   .image {
     height: 30vw;
   }
-
   .header,
   .content {
     width: 70%;
   }
-
   .text {
     font-size: 2vw;
   }
-
   ::placeholder {
     font-size: 20px;
   }
-
   article {
     display: flex;
     flex-direction: column;
@@ -257,40 +235,32 @@ article {
     width: 90%;
     margin: auto;
   }
-
   .photo-profile {
     width: 50px;
   }
 }
-
 @media screen and (max-width: 768px) {
   h1 {
     width: 98%;
     margin-left: 5px;
     font-size: 1.2rem;
   }
-
   .button {
     font-size: 10px;
   }
-
   .header,
   .content {
     width: 98%;
   }
-
   .text {
     font-size: 1.3rem;
   }
-
   .image {
     height: 40vw;
   }
-
   ::placeholder {
     font-size: 1rem;
   }
-
   @media screen and (max-width: 360px) {
   }
 }
