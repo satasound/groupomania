@@ -62,23 +62,27 @@ exports.login = (req, res, next) => {
   ////////////////////////////////////
   user
     .findOne({ where: { email: req.body.email } })
-
     .then((user) => {
+      //L'email n'existe pas
       if (!user) {
-        return res.status(401).json('Utilisateur non trouvé !');
+        return res.status(401).json({ error: 'Utilisateur non trouvé !' });
       }
+
       bcrypt
         .compare(req.body.password, user.password)
         .then((valid) => {
-          if (!valid) {
-            return res.status(401).json('Mot de passe incorrect !');
-          }
+          console.log('---uuuuuuuser.id---' + user.id);
 
+          //Mot de passe non valide
+          if (!valid) {
+            return res.status(401).json({ error: 'Mot de passe incorrect !' });
+          }
+          //Mot de passe  valide
           res.status(200).json({
             userId: user.id,
             image: user.image,
             role: user.role,
-            token: jwt.sign({ userId: user.id, role: user.role }, process.env.TOKEN, { expiresIn: '24h' }),
+            token: jwt.sign({ userId: user.id, role: user.role }, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' }),
           });
         })
         .catch((error) => res.status(500).json({ error }));
