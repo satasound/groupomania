@@ -104,7 +104,7 @@ export default {
         fetch("http://localhost:3000/api/posts", {
           method: "POST",
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: 'Bearer ' + token,
           },
           body: data,
         })
@@ -136,7 +136,7 @@ export default {
           fetch("http://localhost:3000/api/posts", {
             method: "POST",
             headers: {
-              authorization: `Bearer ${token}`,
+              authorization: 'Bearer ' + token,
             },
             body: data,
           })

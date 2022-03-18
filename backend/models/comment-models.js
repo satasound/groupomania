@@ -1,8 +1,7 @@
 const sequelize = require('../config/sequelize');
 const { Sequelize, DataTypes } = require('sequelize');
 
-const comment = sequelize.define(
-  'comment',
+const comment = sequelize.define('comment',
   {
     content: {
       type: DataTypes.STRING,

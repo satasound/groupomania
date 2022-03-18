@@ -169,7 +169,7 @@ export default {
       fetch(`http://localhost:3000/api/posts/${this.id_param}`, {
         method: "GET",
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: 'Bearer ' + token,
         },
       })
         .then((response) => response.json())
@@ -185,7 +185,7 @@ export default {
       fetch(`http://localhost:3000/api/comments/${this.id_param}`, {
         method: "GET",
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: 'Bearer ' + token,
         },
       })
         .then((response) => response.json())
@@ -220,7 +220,7 @@ export default {
         fetch(`http://localhost:3000/api/posts/${this.id_param}`, {
           method: "DELETE",
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: 'Bearer ' + token,
           },
         })
           .then((response) => response.json())
@@ -251,7 +251,7 @@ export default {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
+            authorization: 'Bearer ' + token,
           },
           body: JSON.stringify(data),
         })
@@ -274,7 +274,7 @@ export default {
         fetch(`http://localhost:3000/api/comments/${this.comments[index].id}`, {
           method: "DELETE",
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: 'Bearer ' + token,
           },
         })
           .then((response) => response.json())

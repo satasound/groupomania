@@ -82,7 +82,7 @@ exports.login = (req, res, next) => {
             userId: user.id,
             image: user.image,
             role: user.role,
-            token: jwt.sign({ userId: user.id, role: user.role }, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' }),
+            token: jwt.sign({ userId: user.id, role: user.role }, process.env.TOKEN, { expiresIn: '24h' }),
           });
         })
         .catch((error) => res.status(500).json({ error }));

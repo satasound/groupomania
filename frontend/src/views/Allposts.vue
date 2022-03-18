@@ -15,12 +15,10 @@
           <div>
             <p class="info">
               Posté par
-              <b
-                >{{ post.user.nom }}
+              <b>{{ post.user.nom }}
                 <span v-if="post.user.role != 0"
                   >{{ post.user.prenom }}
-                </span></b
-              >
+                </span></b>
               <img
                 class="photo-profile"
                 v-if="post.user.image"
@@ -54,7 +52,6 @@
             :src="post.image"
             :alt="post.title"
           />
-          <!-- <p>{{ post.comments.length }} <i class="fas fa-comments link"></i></p> -->
           <p>
             {{ post.comments.length }}
             <i class="fas fa-comments link"></i>Commentaires
@@ -85,7 +82,7 @@ export default {
       fetch("http://localhost:3000/api/posts/", {
         method: "GET",
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: 'Bearer ' + token,
         },
       })
         .then((response) => response.json())

@@ -146,7 +146,7 @@ export default {
       fetch(`http://localhost:3000/api/auth/${Id}`, {
         method: "GET",
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: 'Bearer ' + token,
         },
       })
         .then((response) => response.json())
@@ -190,7 +190,7 @@ export default {
         fetch(`http://localhost:3000/api/auth/${Id}`, {
           method: "PUT",
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: 'Bearer ' + token,
           },
           body: data,
         })
@@ -227,7 +227,7 @@ export default {
           fetch(`http://localhost:3000/api/auth/${Id}`, {
             method: "PUT",
             headers: {
-              authorization: `Bearer ${token}`,
+              authorization: 'Bearer ' + token,
             },
             body: data,
           })
@@ -253,7 +253,7 @@ export default {
         fetch(`http://localhost:3000/api/posts/${Id}/posts`, {
           method: "GET",
           headers: {
-            authorization: `Bearer ${token}`,
+            authorization: 'Bearer ' + token,
           },
         })
           .then((response) => response.json())
@@ -267,7 +267,7 @@ export default {
                 fetch(`http://localhost:3000/api/posts/${userPosts[i].id}`, {
                   method: "DELETE",
                   headers: {
-                    authorization: `Bearer ${token}`,
+                    authorization: 'Bearer ' + token,
                   },
                 })
                   .then((response) => response.json())
@@ -280,7 +280,7 @@ export default {
             fetch(`http://localhost:3000/api/auth/${Id}`, {
               method: "DELETE",
               headers: {
-                authorization: `Bearer ${token}`,
+                authorization: 'Bearer ' + token,
               },
             })
               .then((response) => response.json())

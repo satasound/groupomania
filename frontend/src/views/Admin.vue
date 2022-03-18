@@ -113,7 +113,7 @@ export default {
       fetch("http://localhost:3000/api/auth/", {
         method: "GET",
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: 'Bearer ' + token,
         },
       })
         .then((response) => response.json())
@@ -133,7 +133,7 @@ export default {
           {
             method: "GET",
             headers: {
-              authorization: `Bearer ${token}`,
+              authorization: 'Bearer ' + token,
             },
           }
         )
@@ -149,7 +149,7 @@ export default {
                 fetch(`http://localhost:3000/api/posts/${userPosts[i].id}`, {
                   method: "DELETE",
                   headers: {
-                    authorization: `Bearer ${token}`,
+                    authorization: 'Bearer ' + token,
                   },
                 })
                   .then((response) => response.json())
@@ -164,7 +164,7 @@ export default {
               {
                 method: "DELETE",
                 headers: {
-                  authorization: `Bearer ${token}`,
+                  authorization: 'Bearer ' + token,
                 },
               }
             )
@@ -191,7 +191,7 @@ export default {
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",
-              authorization: `Bearer ${token}`,
+              authorization: 'Bearer ' + token,
             },
             body: JSON.stringify(this.filterList[index]),
           }
